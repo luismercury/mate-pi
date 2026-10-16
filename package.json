@@ -4,6 +4,8 @@
   "description": "A guided harness builder that turns your goal into a minimal, verified AI-agent setup using strict best practices.",
   "type": "module",
   "bin": {
+    "mate": "scripts/mate.js",
+    "mate-install": "scripts/install-apply.js",
     "rsc": "scripts/rsc.js",
     "rsc-install": "scripts/install-apply.js"
   },

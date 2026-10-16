@@ -304,3 +304,23 @@ if (has('.git')) {
 // Update check and auto-update: the rule lives in auto-update.mjs, shared with the other assistants.
 // Disable with RSC_NO_UPDATE_CHECK=1.
 if (!process.env.RSC_NO_UPDATE_CHECK) process.stdout.write(await updateNotice(root));
+
+// custom-engram: inyección de observaciones y directivas persistentes desde SQLite
+try {
+  const { getDb, listRecentObservations } = await import('./custom-engram-sqlite.mjs');
+  const db = getDb();
+  let projectName = null;
+  try {
+    const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+    projectName = pkg.name ? pkg.name.replace(/^@[^/]+\//, '') : null;
+  } catch { /* sin package.json */ }
+
+  const obs = listRecentObservations(db, { projectName, limit: 3 });
+  if (obs && obs.length) {
+    process.stdout.write(`
+===== custom-engram memory =====
+${obs.map((o) => `[${o.type.toUpperCase()}] ${o.title}: ${o.content.slice(0, 160)}${o.content.length > 160 ? '...' : ''}`).join('\n')}
+================================
+`);
+  }
+} catch { /* fail open si SQLite no está disponible o falta el módulo */ }

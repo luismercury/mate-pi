@@ -60,6 +60,8 @@ const SPEC = {
   junie: { root: '.junie/rsc', hook: '.junie/guidelines.md', adapter: 'md' },
   kiro: { root: '.kiro/rsc', hook: '.kiro/steering/rsc-suggest.md', adapter: 'md' },
   aider: { root: '.aider/rsc', hook: 'CONVENTIONS.md', adapter: 'md' },
+  // Pi.dev (earendil-works/pi)
+  pi: { root: '.pi/skills', hook: 'AGENTS.md', adapter: 'md' },
 };
 
 const ADAPTER = { claude: claudeAdapter, cursor: cursorAdapter, md: mdAdapter };
@@ -85,6 +87,7 @@ export const TARGETS = [
   { id: 'junie', label: 'JetBrains Junie', hint: '.junie/guidelines.md' },
   { id: 'kiro', label: 'Kiro', hint: '.kiro/steering/' },
   { id: 'aider', label: 'Aider', hint: 'CONVENTIONS.md' },
+  { id: 'pi', label: 'Pi.dev', hint: '.pi/skills/' },
 ];
 
 // Which assistants are actually installed here, read from the state file each one

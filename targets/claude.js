@@ -311,6 +311,27 @@ export function wireHook(paths, sourceMd, policy = {}) {
   } else {
     rmSync(join(paths.projectRoot, '.rsc', 'danger-guard.mjs'), { force: true });
   }
+
+  // Line guard: PreToolUse (Write|Edit|MultiEdit|NotebookEdit) que advierte a las 400 líneas
+  // y bloquea a las 450 líneas para asegurar legibilidad humana y de IA.
+  settings.hooks.PreToolUse ||= [];
+  settings.hooks.PreToolUse = settings.hooks.PreToolUse.filter((e) => !hookWiringOf(e).includes('.rsc/line-guard.'));
+  const lgDest = join(paths.projectRoot, '.rsc', 'line-guard.mjs');
+  copyFileSync(join(HERE, 'line-guard.mjs'), lgDest);
+  const lgCmd = viaBootstrap('guard', at('.rsc', 'line-guard.mjs'), `"${P}"`);
+  settings.hooks.PreToolUse.push({ matcher: 'Edit|Write|MultiEdit|NotebookEdit', hooks: [{ type: 'command', command: lgCmd }] });
+  written.push(lgDest);
+
+  // Circuit breaker: Disyuntor de contexto a los 249.000 tokens (24.9%).
+  // Registra checkpoint de seguridad en custom-engram (SQLite) y exige Cold Reboot.
+  settings.hooks.PreToolUse = settings.hooks.PreToolUse.filter((e) => !hookWiringOf(e).includes('.rsc/circuit-breaker.'));
+  const cbDest = join(paths.projectRoot, '.rsc', 'circuit-breaker.mjs');
+  copyFileSync(join(HERE, 'circuit-breaker.mjs'), cbDest);
+  copyFileSync(join(HERE, 'custom-engram-sqlite.mjs'), join(paths.projectRoot, '.rsc', 'custom-engram-sqlite.mjs'));
+  const cbCmd = viaBootstrap('guard', at('.rsc', 'circuit-breaker.mjs'), `"${P}"`);
+  settings.hooks.PreToolUse.push({ hooks: [{ type: 'command', command: cbCmd }] });
+  written.push(cbDest, join(paths.projectRoot, '.rsc', 'custom-engram-sqlite.mjs'));
+
   if (!settings.hooks.PreToolUse.length) delete settings.hooks.PreToolUse;
 
   mkdirSync(dirname(file), { recursive: true });
