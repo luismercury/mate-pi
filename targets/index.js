@@ -4,6 +4,7 @@ import { homedir } from 'node:os';
 import * as claudeAdapter from './claude.js';
 import * as cursorAdapter from './cursor.js';
 import * as mdAdapter from './_md-block.js';
+import * as piAdapter from './pi.js';
 import { readManifest } from '../scripts/lib/manifest-file.js';
 
 // Project-local single source of truth. Real skill files live here exactly once;
@@ -61,10 +62,10 @@ const SPEC = {
   kiro: { root: '.kiro/rsc', hook: '.kiro/steering/rsc-suggest.md', adapter: 'md' },
   aider: { root: '.aider/rsc', hook: 'CONVENTIONS.md', adapter: 'md' },
   // Pi.dev (earendil-works/pi)
-  pi: { root: '.pi/skills', hook: 'AGENTS.md', adapter: 'md' },
+  pi: { root: '.pi/skills', hook: 'AGENTS.md', adapter: 'pi' },
 };
 
-const ADAPTER = { claude: claudeAdapter, cursor: cursorAdapter, md: mdAdapter };
+const ADAPTER = { claude: claudeAdapter, cursor: cursorAdapter, md: mdAdapter, pi: piAdapter };
 
 // Wizard multi-select list, in "most famous first" order. label/hint are display
 // only; detectTarget just pre-marks the one found in the folder.
@@ -115,6 +116,7 @@ export function installedTargets(cwd = process.cwd()) {
 // detection the moment it ran once.
 export function detectTarget(cwd = process.cwd()) {
   const has = (p) => existsSync(join(cwd, p));
+  if (has('.pi')) return 'pi';
   if (has('.cursor')) return 'cursor';
   if (has('.windsurf')) return 'windsurf';
   if (has('.clinerules')) return 'cline';

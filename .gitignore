@@ -36,3 +36,40 @@ coverage/
 
 # Worktrees created for isolated feature work — the directory is scratch, never content.
 .worktrees/
+
+# rsc local state (hooks, seals, logs) and managed skill links — machine-local
+.pi/skills/analyze
+.pi/skills/automation-strategy
+.pi/skills/clarify
+.pi/skills/connect-tool
+.pi/skills/constitution
+.pi/skills/debug
+.pi/skills/decision-challenge
+.pi/skills/deprecation
+.pi/skills/fable-operator
+.pi/skills/ftd
+.pi/skills/harness
+.pi/skills/idea-refinement
+.pi/skills/implement
+.pi/skills/init
+.pi/skills/orient
+.pi/skills/parallel
+.pi/skills/plan
+.pi/skills/review
+.pi/skills/sdd
+.pi/skills/sdd-init
+.pi/skills/ship
+.pi/skills/simplify-code
+.pi/skills/source-grounded-development
+.pi/skills/specify
+.pi/skills/suggest
+.pi/skills/tasks
+.pi/skills/ui-engineering
+.pi/skills/unslop
+.pi/skills/verify
+.pi/skills/worktrees
+.pi/skills/.rsc-state.json
+!.claude/
+.claude/*
+!.claude/rsc-bootstrap.mjs
+!.claude/settings.json
