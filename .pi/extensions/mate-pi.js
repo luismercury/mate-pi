@@ -4,9 +4,25 @@
 // 2. Token circuit breaker: 249k tokens (24.9%) with custom-engram SQLite checkpoint
 // 3. Memory injection from ~/.custom-engram/engram.db
 
-import { checkToolInput } from '../../targets/line-guard.mjs';
-import { checkContextLimit } from '../../targets/circuit-breaker.mjs';
-import { getDb, listRecentObservations } from '../../targets/custom-engram-sqlite.mjs';
+let checkToolInput, checkContextLimit, getDb, listRecentObservations;
+
+try {
+  const lineMod = await import('./lib/line-guard.mjs');
+  const cbMod = await import('./lib/circuit-breaker.mjs');
+  const sqlMod = await import('./lib/custom-engram-sqlite.mjs');
+  checkToolInput = lineMod.checkToolInput;
+  checkContextLimit = cbMod.checkContextLimit;
+  getDb = sqlMod.getDb;
+  listRecentObservations = sqlMod.listRecentObservations;
+} catch {
+  const lineMod = await import('../../targets/line-guard.mjs');
+  const cbMod = await import('../../targets/circuit-breaker.mjs');
+  const sqlMod = await import('../../targets/custom-engram-sqlite.mjs');
+  checkToolInput = lineMod.checkToolInput;
+  checkContextLimit = cbMod.checkContextLimit;
+  getDb = sqlMod.getDb;
+  listRecentObservations = sqlMod.listRecentObservations;
+}
 
 export default function(pi) {
   // Session startup: inject memory observations into Pi

@@ -29,6 +29,19 @@ export function wireHook(paths, sourceMd, policy = {}) {
     touched.push(dstJs);
   }
 
+  // Copy internal guard modules to .pi/extensions/lib for self-contained execution
+  const libDir = join(extDir, 'lib');
+  mkdirSync(libDir, { recursive: true });
+  const guards = ['line-guard.mjs', 'circuit-breaker.mjs', 'custom-engram-sqlite.mjs'];
+  for (const g of guards) {
+    const srcG = join(ROOT, 'targets', g);
+    const dstG = join(libDir, g);
+    if (existsSync(srcG) && !existsSync(dstG)) {
+      cpSync(srcG, dstG);
+      touched.push(dstG);
+    }
+  }
+
   // Ensure .mcp.json exists in target project
   const srcMcp = join(ROOT, '.mcp.json');
   const dstMcp = join(paths.projectRoot, '.mcp.json');
